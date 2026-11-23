@@ -1,7 +1,20 @@
 // DRuf – Antwort-Engine (offline). Vergleicht Stichwörter mit der Frage und
 // liefert den besten Treffer aus der eigenen Wissensdatenbank.
+// Merkt sich das letzte Thema pro Bereich, damit Folgesätze funktionieren.
 
-const KB = require("./knowledge.js");
+const VORLAGEN = require("./vorlagen.js");
+const KB = require("./knowledge.js").map((e) =>
+  VORLAGEN[e.id] ? { ...e, vorlage: VORLAGEN[e.id] } : e
+);
+
+const lastTopic = {}; // mode -> zuletzt gewählter Eintrag
+
+// Wörter, die auf "ich will eine fertige Vorlage / Antwort" hindeuten
+const WANT_TEXT = [
+  "schreib", "schreibe", "schreiben", "erstell", "erstelle", "erstellen",
+  "mach", "mache", "machen", "vorlage", "text", "ja", "bitte", "die", "das", "den",
+  "weiter", "ausführlich", "genauer", "dazu",
+];
 
 function normalize(text) {
   return String(text || "")
@@ -23,15 +36,25 @@ function keywordHit(keyword, text) {
   return text.includes(keyword);
 }
 
+function keywordWeight(keyword) {
+  // Längere, genauere Stichwörter zählen mehr
+  if (keyword.length >= 10) return 5;
+  if (keyword.length >= 6) return 3;
+  if (keyword.length >= 4) return 2;
+  return 1;
+}
+
 function scoreEntry(entry, text) {
   let score = 0;
   for (const keyword of entry.keywords) {
-    if (keywordHit(keyword, text)) {
-      // Längere, genauere Stichwörter zählen mehr
-      score += keyword.length >= 6 ? 3 : keyword.length >= 4 ? 2 : 1;
-    }
+    if (keywordHit(keyword, text)) score += keywordWeight(keyword);
   }
   return score;
+}
+
+function wantsText(text) {
+  const words = text.split(/[^a-zäöüß]+/).filter(Boolean);
+  return words.some((w) => WANT_TEXT.includes(w));
 }
 
 function topicsFor(mode) {
@@ -57,7 +80,16 @@ function answer(mode, question) {
     }
   }
 
+  // Folgesatz ohne neues Thema: letztes Thema weiterführen
+  if (!best && lastTopic[mode] && wantsText(text)) {
+    const prev = lastTopic[mode];
+    if (prev.vorlage && wantsText(text)) return { text: prev.vorlage };
+    return { text: prev.answer };
+  }
+
   if (best) {
+    lastTopic[mode] = best;
+    if (best.vorlage && wantsText(text)) return { text: best.vorlage };
     return { text: best.answer };
   }
 

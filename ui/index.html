@@ -31,12 +31,7 @@
   .hidden { display: none !important; }
 
   /* ---------- Login ---------- */
-  #login {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  #login { height: 100%; display: flex; align-items: center; justify-content: center; }
   .login-card {
     width: min(420px, 90vw);
     background: linear-gradient(180deg, var(--panel-2), var(--panel));
@@ -58,19 +53,19 @@
   .sub { color: var(--muted); margin-top: 6px; font-size: 14px; }
   .field { margin-top: 26px; text-align: left; }
   .field label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  input[type=text], textarea {
+  input[type=text], input[type=number], textarea {
     width: 100%;
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
     border-radius: 12px;
-    padding: 14px 16px;
+    padding: 12px 14px;
     font-size: 15px;
     outline: none;
     transition: border-color .2s, box-shadow .2s;
     font-family: inherit;
   }
-  input[type=text]:focus, textarea:focus {
+  input:focus, textarea:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 4px rgba(124,92,255,.2);
   }
@@ -93,11 +88,7 @@
   .error { color: var(--danger); font-size: 13px; margin-top: 12px; min-height: 18px; }
 
   /* ---------- App ---------- */
-  #app {
-    height: 100%;
-    display: grid;
-    grid-template-columns: 240px 1fr;
-  }
+  #app { height: 100%; display: grid; grid-template-columns: 240px 1fr; }
   aside {
     background: rgba(18,21,29,.7);
     backdrop-filter: blur(10px);
@@ -130,12 +121,7 @@
   .nav-btn small { display: block; font-size: 11px; opacity: .7; margin-top: 2px; }
   .aside-foot { margin-top: auto; font-size: 11px; color: var(--muted); padding: 0 8px; }
 
-  main {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 0;
-  }
+  main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
   header {
     padding: 22px 30px;
     border-bottom: 1px solid var(--border);
@@ -165,12 +151,7 @@
     flex-direction: column;
     gap: 16px;
   }
-  .empty {
-    margin: auto;
-    text-align: center;
-    color: var(--muted);
-    max-width: 480px;
-  }
+  .empty { margin: auto; text-align: center; color: var(--muted); max-width: 480px; }
   .empty h3 { color: var(--text); font-size: 20px; margin-bottom: 8px; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
   .chip {
@@ -243,17 +224,47 @@
     gap: 12px;
     align-items: flex-end;
   }
-  .composer textarea {
-    resize: none;
-    height: 56px;
-    max-height: 200px;
+  .composer textarea { resize: none; height: 56px; max-height: 200px; }
+  .send { width: 110px; height: 56px; margin: 0; flex-shrink: 0; }
+
+  /* ---------- Fahrzeug-Einstellungen ---------- */
+  #vehicle {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 30px 30px;
   }
-  .send {
-    width: 110px;
-    height: 56px;
-    margin: 0;
-    flex-shrink: 0;
+  .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .vgrid .full { grid-column: 1 / -1; }
+  .vgrid label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
   }
+  .vgrid small { color: var(--muted); font-size: 11px; opacity: .8; }
+  .vnote {
+    margin: 16px 0;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,92,122,.35);
+    border-radius: 12px;
+    font-size: 12.5px;
+    color: #ffb3c1;
+    line-height: 1.5;
+  }
+  .vout {
+    margin-top: 18px;
+    background: #07090e;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    white-space: pre;
+    overflow-x: auto;
+    min-height: 60px;
+  }
+  .row-btns { display: flex; gap: 10px; }
+  .row-btns .btn { margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -263,7 +274,7 @@
   <div class="login-card">
     <div class="logo">D</div>
     <h1>DRuf</h1>
-    <p class="sub">Dein KI-Assistent für FiveM</p>
+    <p class="sub">Dein FiveM-Assistent</p>
     <div class="field">
       <label for="code">Zugangscode</label>
       <input type="text" id="code" placeholder="FIVEM-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false">
@@ -281,9 +292,10 @@
       <strong>DRuf</strong>
     </div>
     <button class="nav-btn active" data-mode="scripts">Scripts<small>Lua, ESX, QBCore, ox_lib</small></button>
-    <button class="nav-btn" data-mode="bewerbungen">Bewerbungen<small>Texte & Tipps für Teams</small></button>
+    <button class="nav-btn" data-mode="bewerbungen">Bewerbungen<small>Texte & Vorlagen</small></button>
     <button class="nav-btn" data-mode="fragen">Fragen<small>Setup, Fehler, Konfiguration</small></button>
-    <div class="aside-foot">Unbegrenzte Nutzung</div>
+    <button class="nav-btn" data-mode="fahrzeug">Fahrzeug-Einstellungen<small>handling.meta erstellen</small></button>
+    <div class="aside-foot">Offline · unbegrenzt</div>
   </aside>
 
   <main>
@@ -296,8 +308,9 @@
     </header>
 
     <div id="chat"></div>
+    <div id="vehicle" class="hidden"></div>
 
-    <div class="composer">
+    <div class="composer" id="composer">
       <textarea id="input" placeholder="Nachricht eingeben… (Enter senden, Shift+Enter neue Zeile)"></textarea>
       <button class="btn send" id="sendBtn">Senden</button>
     </div>
@@ -309,22 +322,40 @@
     scripts: {
       title: "Scripts",
       desc: "Schreibe, erkläre oder repariere FiveM-Scripts.",
-      empty: "Beschreibe, welches Script du brauchst – ich liefere lauffähigen Code.",
-      chips: ["Ein /carry-Script für ESX", "Fehler in fxmanifest.lua finden", "Ein Notify-Script mit ox_lib"]
+      empty: "Beschreibe, welches Script du brauchst – ich liefere Vorlagen für client.lua und server.lua.",
+      chips: ["Ein Befehl für ESX", "Ein Notify mit ox_lib", "Ein Item benutzbar machen"]
     },
     bewerbungen: {
       title: "Bewerbungen",
-      desc: "Texte und Tipps für Bewerbungen bei FiveM-Teams.",
-      empty: "Erzähl mir kurz, für welches Team du dich bewirbst – ich helfe beim Text.",
-      chips: ["Staff-Bewerbung schreiben", "Fraktions-Bewerbung verbessern", "Tipps für ein Bewerbungsgespräch"]
+      desc: "Texte und Vorlagen für Bewerbungen bei FiveM-Teams.",
+      empty: "Sag mir, welche Bewerbung du brauchst – ich liefere eine Vorlage mit Platzhaltern.",
+      chips: ["Staff-Bewerbung schreiben", "Fraktions-Bewerbung schreiben", "Content-Creator-Bewerbung"]
     },
     fragen: {
       title: "Fragen",
       desc: "Setup, Konfiguration und Fehlermeldungen rund um FiveM.",
       empty: "Stell deine Frage – ich helfe bei Setup, txAdmin, Resources und Fehlern.",
       chips: ["Was bedeutet 'resource not found'?", "Wie richte ich txAdmin ein?", "ESX oder QBCore?"]
+    },
+    fahrzeug: {
+      title: "Fahrzeug-Einstellungen",
+      desc: "Werte für handling.meta eintragen und die Datei erzeugen.",
+      empty: "",
+      chips: []
     }
   };
+
+  // Felder der handling.meta
+  const VEHICLE_FIELDS = [
+    { id: "fMass", label: "Masse (fMass)", def: 1500, hint: "Schwerer = träger" },
+    { id: "fInitialDriveMaxFlatVel", label: "Höchstgeschwindigkeit (fInitialDriveMaxFlatVel)", def: 160, hint: "Maximale Geschwindigkeit" },
+    { id: "fInitialDriveForce", label: "Beschleunigung (fInitialDriveForce)", def: 0.3, hint: "Stärker = schneller auf Tempo" },
+    { id: "fBrakeForce", label: "Bremskraft (fBrakeForce)", def: 1.0, hint: "Wie stark gebremst wird" },
+    { id: "fSteeringLock", label: "Lenkwinkel (fSteeringLock)", def: 35, hint: "Größer = engere Kurven" },
+    { id: "fTractionCurveMax", label: "Bodenhaftung max (fTractionCurveMax)", def: 2.5, hint: "Haftung bei Geradeaus" },
+    { id: "fTractionCurveMin", label: "Bodenhaftung min (fTractionCurveMin)", def: 2.3, hint: "Haftung bei Grenzbereich, muss kleiner als max sein" },
+    { id: "fTractionCurveLateral", label: "Seitenhaftung (fTractionCurveLateral)", def: 22.5, hint: "Klebt das Auto in Kurven am Boden" },
+  ];
 
   let mode = "scripts";
   let history = { scripts: [], bewerbungen: [], fragen: [] };
@@ -369,9 +400,112 @@
     const m = MODES[mode];
     $("modeTitle").textContent = m.title;
     $("modeDesc").textContent = m.desc;
-    renderChat();
+    const isVehicle = mode === "fahrzeug";
+    $("chat").classList.toggle("hidden", isVehicle);
+    $("composer").classList.toggle("hidden", isVehicle);
+    $("clearBtn").classList.toggle("hidden", isVehicle);
+    $("vehicle").classList.toggle("hidden", !isVehicle);
+    if (isVehicle) {
+      renderVehicle();
+    } else {
+      renderChat();
+    }
   }
 
+  // ---------- Fahrzeug-Formular ----------
+  function renderVehicle() {
+    const box = $("vehicle");
+    if (box.dataset.ready === "1") return;
+    box.dataset.ready = "1";
+
+    const note = document.createElement("div");
+    note.className = "vnote";
+    note.textContent =
+      "Achtung: Die Werte müssen zu deinem Fahrzeug passen. Vergleiche sie mit der Original-handling.meta des Fahrzeugs. " +
+      "Zu extreme Werte können das Auto unfahrbar machen. Teste jede Änderung auf dem Testserver.";
+
+    const grid = document.createElement("div");
+    grid.className = "vgrid";
+
+    const nameWrap = document.createElement("div");
+    nameWrap.className = "full";
+    nameWrap.innerHTML = '<label for="vName">Handling-Name (handlingName, z. B. ADDER)</label>';
+    const nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.id = "vName";
+    nameInput.value = "MEINAUTO";
+    nameWrap.appendChild(nameInput);
+    grid.appendChild(nameWrap);
+
+    VEHICLE_FIELDS.forEach(f => {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = `<label for="v_${f.id}">${f.label}<br><small>${f.hint}</small></label>`;
+      const input = document.createElement("input");
+      input.type = "number";
+      input.step = "any";
+      input.id = "v_" + f.id;
+      input.value = f.def;
+      wrap.appendChild(input);
+      grid.appendChild(wrap);
+    });
+
+    const btns = document.createElement("div");
+    btns.className = "row-btns";
+    const gen = document.createElement("button");
+    gen.className = "btn";
+    gen.textContent = "handling.meta erstellen";
+    gen.addEventListener("click", generateVehicle);
+    btns.appendChild(gen);
+
+    const copy = document.createElement("button");
+    copy.className = "btn";
+    copy.textContent = "Kopieren";
+    copy.style.background = "var(--panel-2)";
+    copy.addEventListener("click", () => {
+      const text = $("vOut").textContent;
+      if (text) navigator.clipboard.writeText(text);
+    });
+    btns.appendChild(copy);
+
+    const out = document.createElement("div");
+    out.className = "vout";
+    out.id = "vOut";
+    out.textContent = "Werte eingeben und auf „handling.meta erstellen“ klicken.";
+
+    box.appendChild(note);
+    box.appendChild(grid);
+    box.appendChild(btns);
+    box.appendChild(out);
+  }
+
+  function generateVehicle() {
+    const name = ($("vName").value || "MEINAUTO").trim().toUpperCase().replace(/[^A-Z0-9_]/g, "");
+    const values = {};
+    const problems = [];
+    VEHICLE_FIELDS.forEach(f => {
+      const raw = $("v_" + f.id).value.replace(",", ".");
+      const num = parseFloat(raw);
+      if (isNaN(num)) problems.push(`${f.id} ist keine Zahl`);
+      values[f.id] = isNaN(num) ? f.def : num;
+    });
+    if (values.fTractionCurveMin > values.fTractionCurveMax) {
+      problems.push("fTractionCurveMin ist größer als fTractionCurveMax");
+    }
+
+    const lines = [
+      '<Item type="CHandlingData">',
+      `  <handlingName>${name || "MEINAUTO"}</handlingName>`,
+      ...VEHICLE_FIELDS.map(f => `  <${f.id} value="${values[f.id].toFixed(6)}"/>`),
+      "</Item>",
+    ];
+    let text = lines.join("\n");
+    if (problems.length) {
+      text = "Bitte prüfen:\n- " + problems.join("\n- ") + "\n\n" + text;
+    }
+    $("vOut").textContent = text;
+  }
+
+  // ---------- Chat ----------
   function renderChat() {
     const chat = $("chat");
     chat.innerHTML = "";
