@@ -1,0 +1,48 @@
+{
+  "name": "druf",
+  "version": "1.0.0",
+  "description": "DRuf – offline FiveM-Assistent",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "productName": "DRuf",
+  "build": {
+    "appId": "de.druf.app",
+    "productName": "DRuf",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "kb/**/*",
+      "ui/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false,
+      "forceCodeSigning": false
+    },
+    "electronLanguages": [
+      "de",
+      "en-US"
+    ]
+  }
+}
