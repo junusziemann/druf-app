@@ -265,6 +265,25 @@
   }
   .row-btns { display: flex; gap: 10px; }
   .row-btns .btn { margin-top: 14px; }
+
+  /* ---------- Script-Generator ---------- */
+  #generator { flex: 1; overflow-y: auto; padding: 24px 30px 30px; }
+  select {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 12px; padding: 12px 14px; font-size: 15px; outline: none; font-family: inherit;
+  }
+  select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(124,92,255,.2); }
+  .chk { display: flex !important; align-items: center; gap: 8px; color: var(--text) !important; font-size: 14px !important; }
+  .chk input { width: auto; }
+  .btn.alt { background: var(--panel-2); border: 1px solid var(--border); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .tab {
+    background: var(--panel-2); border: 1px solid var(--border); color: var(--muted);
+    border-radius: 10px; padding: 8px 14px; font-size: 12.5px; cursor: pointer; font-family: Consolas, monospace;
+  }
+  .tab.active { color: var(--text); border-color: var(--accent); }
+  .gnotes { margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .gstatus { margin-top: 12px; font-size: 13px; color: var(--accent-2); min-height: 18px; }
 </style>
 </head>
 <body>
@@ -295,6 +314,7 @@
     <button class="nav-btn" data-mode="bewerbungen">Bewerbungen<small>Texte & Vorlagen</small></button>
     <button class="nav-btn" data-mode="fragen">Fragen<small>Setup, Fehler, Konfiguration</small></button>
     <button class="nav-btn" data-mode="fahrzeug">Fahrzeug-Einstellungen<small>handling.meta erstellen</small></button>
+    <button class="nav-btn" data-mode="generator">Script-Generator<small>client, server, UI fertig erzeugen</small></button>
     <div class="aside-foot">Offline · unbegrenzt</div>
   </aside>
 
@@ -309,6 +329,7 @@
 
     <div id="chat"></div>
     <div id="vehicle" class="hidden"></div>
+    <div id="generator" class="hidden"></div>
 
     <div class="composer" id="composer">
       <textarea id="input" placeholder="Nachricht eingeben… (Enter senden, Shift+Enter neue Zeile)"></textarea>
@@ -317,6 +338,7 @@
   </main>
 </div>
 
+<script src="generator.js"></script>
 <script>
   const MODES = {
     scripts: {
@@ -340,6 +362,12 @@
     fahrzeug: {
       title: "Fahrzeug-Einstellungen",
       desc: "Werte für handling.meta eintragen und die Datei erzeugen.",
+      empty: "",
+      chips: []
+    },
+    generator: {
+      title: "Script-Generator",
+      desc: "Erzeugt fxmanifest.lua, client.lua, server.lua und bei Bedarf ein UI-Menü.",
       empty: "",
       chips: []
     }
@@ -401,12 +429,17 @@
     $("modeTitle").textContent = m.title;
     $("modeDesc").textContent = m.desc;
     const isVehicle = mode === "fahrzeug";
-    $("chat").classList.toggle("hidden", isVehicle);
-    $("composer").classList.toggle("hidden", isVehicle);
-    $("clearBtn").classList.toggle("hidden", isVehicle);
+    const isGen = mode === "generator";
+    const isTool = isVehicle || isGen;
+    $("chat").classList.toggle("hidden", isTool);
+    $("composer").classList.toggle("hidden", isTool);
+    $("clearBtn").classList.toggle("hidden", isTool);
     $("vehicle").classList.toggle("hidden", !isVehicle);
+    $("generator").classList.toggle("hidden", !isGen);
     if (isVehicle) {
       renderVehicle();
+    } else if (isGen) {
+      window.DrufGen.render($("generator"));
     } else {
       renderChat();
     }

@@ -427,7 +427,7 @@ Halte die Antworten kurz und sachlich. Schreib keine Erfahrungen, die du nicht h
   {
     id: "fraktion-bewerbung",
     mode: "bewerbungen",
-    keywords: ["fraktion", "polizei", "lspd", "fbi", "fib", "medic", "rettungsdienst", "rp", "roleplay", "rollenspiel bewerbung"],
+    keywords: ["fraktion", "polizei", "lspd", "fbi", "fib", "rp", "roleplay", "rollenspiel bewerbung"],
     answer: `Für eine Fraktionsbewerbung (zum Beispiel Polizei oder Rettungsdienst) zählt vor allem Rollenspiel:
 
 1. **Charakter:** Name, Alter, Herkunft und kurze Hintergrundgeschichte.
@@ -504,9 +504,11 @@ Wenn du mir sagst, für welches Team du dich bewirbst, helfe ich dir bei der Str
     keywords: ["was kannst du", "was kannst", "funktionen", "hilfe", "help", "themen"],
     answer: `Ich kann dir mit diesen Themen helfen:
 
-- **Scripts:** fxmanifest, Befehle, Notify, Keybinds, Blips, Marker, Ladebalken, Items, Events, Datenbank, Animationen, Fahrzeuge, Props, Teleport und häufige Lua-Fehler.
-- **Bewerbungen:** Staff, Fraktionen, Content Creator, Charaktere und Gesprächsvorbereitung.
-- **Fragen:** Frameworks, txAdmin, server.cfg, Lizenz, Performance und Voice.
+- **Scripts:** fxmanifest, Befehle, Notify, Keybinds, Blips, Marker, Ladebalken, Items, Events, Datenbank, Animationen, Fahrzeuge, Props, Teleport, Geld, ox_target, NUI und häufige Lua-Fehler.
+- **Bewerbungen und Konzepte:** Staff, Whitelist, Fraktionen, Medic, Mechaniker, Content Creator, Charaktere, Fraktions-, Server- und Eventkonzept. Sag "schreib die" für eine fertige Vorlage.
+- **Fragen:** Frameworks, txAdmin, server.cfg, Lizenz, Performance, Voice, Jobs, Datenbank, Addon-Fahrzeuge, handling.meta und Konsolenfehler.
+- **Fahrzeug-Einstellungen:** handling.meta per Formular erstellen.
+- **Script-Generator:** fertige Scripts mit client.lua, server.lua und UI-Menü erzeugen.
 
 Schreib einfach ein Stichwort oder eine Frage.`
   }

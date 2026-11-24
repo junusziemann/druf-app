@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
@@ -52,6 +52,34 @@ ipcMain.handle("ask", async (_e, mode, messages) => {
   // kurze Denkpause, damit es sich wie eine Antwort anfühlt
   await new Promise((r) => setTimeout(r, 600));
   return answer(mode, last ? last.content : "");
+});
+
+// Erzeugte Script-Dateien als Ordner speichern (Nutzer wählt den Zielordner)
+ipcMain.handle("save-files", async (event, resName, files) => {
+  try {
+    const name = String(resName || "script").toLowerCase().replace(/[^a-z0-9_]/g, "") || "script";
+    const entries = Object.entries(files || {});
+    if (!entries.length || entries.length > 20) return { error: "Keine gültigen Dateien." };
+
+    const win = BrowserWindow.fromWebContents(event.sender);
+    const pick = await dialog.showOpenDialog(win, {
+      title: "Ordner zum Speichern wählen",
+      properties: ["openDirectory", "createDirectory"],
+    });
+    if (pick.canceled || !pick.filePaths[0]) return { canceled: true };
+
+    const base = path.join(pick.filePaths[0], name);
+    for (const [rel, content] of entries) {
+      if (!/^[A-Za-z0-9_./-]+$/.test(rel) || rel.includes("..") || rel.startsWith("/")) continue;
+      const target = path.join(base, rel);
+      if (!target.startsWith(base + path.sep)) continue;
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, String(content), "utf-8");
+    }
+    return { ok: true, path: base };
+  } catch (e) {
+    return { error: "Speichern fehlgeschlagen: " + e.message };
+  }
 });
 
 function createWindow() {

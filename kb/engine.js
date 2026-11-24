@@ -2,8 +2,8 @@
 // liefert den besten Treffer aus der eigenen Wissensdatenbank.
 // Merkt sich das letzte Thema pro Bereich, damit Folgesätze funktionieren.
 
-const VORLAGEN = require("./vorlagen.js");
-const KB = require("./knowledge.js").map((e) =>
+const VORLAGEN = Object.assign({}, require("./vorlagen.js"), require("./vorlagen-extra.js"));
+const KB = require("./knowledge.js").concat(require("./extra.js")).map((e) =>
   VORLAGEN[e.id] ? { ...e, vorlage: VORLAGEN[e.id] } : e
 );
 
@@ -44,12 +44,15 @@ function keywordWeight(keyword) {
   return 1;
 }
 
+// Allgemeine Sammel-Einträge zählen schwächer, damit spezifische Treffer gewinnen
+const WEAK = new Set(["bewerbung-allgemein"]);
+
 function scoreEntry(entry, text) {
   let score = 0;
   for (const keyword of entry.keywords) {
     if (keywordHit(keyword, text)) score += keywordWeight(keyword);
   }
-  return score;
+  return WEAK.has(entry.id) ? score * 0.5 : score;
 }
 
 function wantsText(text) {
